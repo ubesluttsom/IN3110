@@ -1,3 +1,3 @@
-Here’s a line
-Hello world!
-Here’s another line
+Here’s a line from the alpha timeline.
+Hello alphaworld!
+Here’s another line from the same world.
