@@ -21,7 +21,7 @@ if [ "$cmd" == "start" ]; then
     echo "Can't start new task concurrent to previous. (End it first.)"
     exit 0
   else
-    echo "START $(date)" | tee -a $LOGFILE
+    echo "START $(date +'%a %d %b %T %Z %Y')" | tee -a $LOGFILE
     if [ "$label" == "" ]; then
       label='<null>'
     fi
@@ -35,7 +35,7 @@ if [ "$cmd" == "stop" ]; then
     echo "No current task."
     exit 0
   else
-    echo "END $(date)" | tee -a $LOGFILE
+    echo "END $(date +'%a %d %b %T %Z %Y')" | tee -a $LOGFILE
     exit 1
   fi
 fi
@@ -49,4 +49,12 @@ if [ "$cmd" == "status" ]; then
     echo "No current task."
     exit 1
   fi
+fi
+
+if [ "$cmd" == "log" ]; then
+  # Find all LABELS
+  # for each LABEL
+  #   Extract START and END
+  #   Use `date`(?) to calculate difference
+  grep --context=1 "LABEL" $LOGFILE | sed -e '/LABEL/d' -e '/--/d' | cut -d' ' -f 2-
 fi
