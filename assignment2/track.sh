@@ -37,7 +37,7 @@ case "$cmd" in
       echo "No current task."; exit 1
     fi ;;
   log)
-    grep "LABEL" $LOGFILE | cut -d' ' -f 2 | while read LABEL;
+    grep "LABEL" $LOGFILE | cut -d' ' -f 2- | while read LABEL;
     do
       # Extract START and END times for each label:
       # `grep`: find right lines (notice before/after-context)

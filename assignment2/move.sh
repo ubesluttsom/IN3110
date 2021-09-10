@@ -4,7 +4,7 @@ src=$1
 dst=$2
 
 if [ ! "$#" -eq 2 ]; then
-  echo "USAGE: move <src> <dst>";
+  echo "usage: move <src> <dst>";
   exit 0
 fi
 
