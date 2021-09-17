@@ -1,4 +1,3 @@
-
 class Array:
 
     def __init__(self, shape, *values):
@@ -24,26 +23,40 @@ class Array:
         
         # Check if the values are of valid type
 
-        if len(shape) not in (1, 2):
-            raise ValueError
+        # if len(shape) not in (1, 2):
+        #     raise ValueError
         if not isinstance(shape, tuple):
             raise ValueError
         for i in shape:
             if not type(i) is int:
                 raise ValueError
+
+        # Check if number of elements fit the shape
+        elements = 1
+        for dimention in shape:
+            elements *= dimention
+        if len(values) != elements:
+            raise ValueError
+        else: 
+            self.shape = shape
+
+        # Check value types
+        value_types = set()
         for v in values:
             if not type(v) in (int, float, bool):
                 raise ValueError
-        
-        # Optional: If not all values are of same type, all are converted to
-        # floats.
-
-        # TODO!
-
-        self.shape = shape
-        self.values = values
-        
-        pass
+            else:
+                value_types.add(type(v))
+        # If the set of value types contains more than 1 type, convert all
+        # values to floating points before setting Array objects values.
+        if len(value_types) > 1:
+            float_values = list()
+            for v in values:
+                float_values.append(float(v))
+            self.values = float_values
+        # Else, keep the value type
+        else:
+            self.values = values
 
     def __str__(self):
         """Returns a nicely printable string representation of the array.
@@ -54,7 +67,7 @@ class Array:
         """
         return self.values.__str__()
 
-    def __getitem__ (self, item): # Same as in assignment text example
+    def __getitem__ (self, item):
         """ Returns value of item in array.
 
             Args :
@@ -63,6 +76,7 @@ class Array:
             Returns :
                 value : Value of the given item.
         """
+        # Not really properly implemeted.
         return self.values[item]
 
     def __add__(self, other):
@@ -84,34 +98,34 @@ class Array:
         # check that the method supports the given arguments (check for data
         # type and shape of array)
 
+        new_values = list()
+
         # Check if Arrays or scalar
         if type(self) == type(other):   # if both Array
 
-            # Check if values are of same type
-            if type(self.values[0]) != type(other.values[0]):
-                raise NotImplemented
+            # # Check if values are of same type
+            # if type(self.values[0]) != type(other.values[0]):
+            #     raise NotImplemented
 
             # Check if shapes are equal
             for s, o in zip(self.shape, other.shape):
                 if s != o:
                     raise NotImplemented
 
-            # Add Array values, create and return new array
-            new_array_values = list(self.values)
-            for i in range(self.shape[0]):
-                new_array_values[i] += other.values[i]
-            return Array(self.shape, *new_array_values)
+            # Add Array values, append to new array
+            for s, o in zip(self.values, other.values):
+                new_values.append(s + o)
         
-        elif not type(other) in (int, float, bool):   # if not scalar
-            raise NotImplemented
-
-        else:   # that is, if scalar
+        elif type(other) in (int, float, bool):   # If scalar
 
             # Add scalar
-            new_array_values = list(self.values)
-            for i in range(self.shape[0]):
-                new_array_values[i] += other
-            return Array(self.shape, *new_array_values)
+            for value in self.values:
+                new_values.append(value + other)
+
+        else:
+            raise NotImplemented
+
+        return Array(self.shape, *new_values)
 
     def __radd__(self, other):
         """Element-wise adds Array with another Array or number.
@@ -147,11 +161,17 @@ class Array:
         """
         if type(other) in (float, int):
             return self + (- other)
+
         elif type(other) is Array:
-            neg_values = list(other.values)
-            for i, v in enumerate(neg_values):
-                neg_values[i] = -v
+
+            # Negate all of `other`s values
+            neg_values = list()
+            for value in other.values:
+                neg_values.append(-value)
+
+            # Return sum of self and the negated values
             return self + Array(other.shape, *neg_values)
+
         else:
             raise NotImplemented
 
@@ -193,6 +213,8 @@ class Array:
 
         """
 
+        new_values = list()
+
         # Check if Arrays or scalar
         if type(self) == type(other):   # if both Array
 
@@ -205,22 +227,20 @@ class Array:
                 if s != o:
                     raise NotImplemented
 
-            # Multiply Array values, create and return new array
-            new_array_values = list(self.values)
-            for i in range(self.shape[0]):
-                new_array_values[i] *= other.values[i]
-            return Array(self.shape, *new_array_values)
+            # Multiply Array values, and append to new array
+            for s, o in zip(self.values, other.values):
+                new_values.append(s * o)
         
         elif type(other) in (int, float, bool):   # if scalar
 
             # Multiply scalar
-            new_array_values = list(self.values)
-            for i in range(self.shape[0]):
-                new_array_values[i] *= other
-            return Array(self.shape, *new_array_values)
+            for value in self.values:
+                new_values.append(value * other)
 
         else:
             raise NotImplemented
+
+        return Array(self.shape, *new_values)
 
     def __rmul__(self, other):
         """Element-wise multiplies this Array with a number or array.
@@ -295,9 +315,30 @@ class Array:
         Raises:
             ValueError: if the shape of self and other are not equal.
 
-        """
+        """ 
+        new_values = list()
 
-        pass
+        if type(self) == type(other):   # if both Array
+
+            # Check if `shape`s are equal
+            for s, o in zip(self.shape, other.shape):
+                if s != o:
+                    raise ValueError
+
+            # Check if `values` are equal
+            new_values = list()
+            for s, o in zip(self.values, other.values):
+                new_values.append((s == o))
+
+        elif type(other) in (int, float, bool):   # if scalar
+            # Check if `values` are equal scalar
+            for value in self.values:
+                new_values.append((value == other))
+
+        else:
+            raise TypeError
+
+        return Array(self.shape, *new_values)
     
 
     def min_element(self):
@@ -309,51 +350,4 @@ class Array:
             float: The value of the smallest element in the array.
 
         """
-        
-        pass
-
-
-# TEST AREA
-
-def test_addition():
-    a = Array((2,), 1, 1)
-    b = Array((2,), 2, 2)
-    c = Array((2,), 3, 3)
-    d = Array((4,), 3, 3, 6, -2)
-    e = Array((4,), 0, 0, -6, -1)
-    f = Array((4,), 3, 3, 0, -3)
-    assert a + b == c
-    assert a + 2 == a + a + a
-    assert 2 + a == a + a + a
-    assert a + c == a + a + a + a
-    assert d + e == f
-
-def test_subtraction():
-    a = Array((2,), 1, 1)
-    b = Array((2,), 2, 2)
-    c = Array((2,), 3, 3)
-    d = Array((4,), 3, 3, 6, -2)
-    e = Array((4,), 0, 0, -6, -1)
-    f = Array((4,), 3, 3, 12, -1)
-    assert a - b == 0 - a
-    assert c - a == b
-    assert a - 2 == 0 - a
-    assert 2 - a == a
-    assert d - e == f
-
-def test_multiplication():
-    a = Array((2,), 1, 1)
-    b = Array((2,), 2, 2)
-    c = Array((2,), 3, 3)
-    d = Array((4,), 3, 3, 6, -2)
-    e = Array((4,), 0, 0, -6, -1)
-    f = Array((4,), 0, 0, -36, 2)
-    assert a * 2 == b
-    assert 3 * a == c
-    assert a * b == b
-    assert b * c == a + a + a + a + a + a
-    assert d * e == f
-
-test_addition()
-test_subtraction()
-test_multiplication()
+        return min(self.values)   # <-- This is so dumb
