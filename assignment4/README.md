@@ -2,6 +2,7 @@
 
 ## Setup
 
+<<<<<<< HEAD
 Using the built-in<sup>[1](#bloat)</sup> python module
 [`venv`](https://docs.python.org/3/library/venv.html), create a virtual
 environment and activate it, e.g:
