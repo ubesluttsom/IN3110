@@ -16,5 +16,5 @@ $ pip install --requirement requirements.txt
 
 ---
 
-<a name="bloat">1</a>: As opposed to `virtualenv` or `conda`. Why does this course insist on
+<sup><a name="bloat">1</a></sup>: As opposed to `virtualenv` or `conda`. Why does this course insist on
 bloating my computer with unnecessary installations?
