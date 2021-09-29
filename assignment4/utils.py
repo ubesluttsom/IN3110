@@ -7,6 +7,7 @@ def timer(imagefile,
                            "numba"),
           number=10):
 
+  # Initialise empty dictionary for storage of statistics
   averages = dict()
 
   # Iterate over the tuple (or other `iterable`) of implementations.
@@ -24,18 +25,27 @@ def timer(imagefile,
     shape   = imread(imagefile).shape
     command = ''.join([implementation, "('", imagefile, "')"])
     setup   = ' '.join(["from", implementation, "import", implementation])
-    print("Timing:", implementation, "on image with shape", shape, "--- width,",
-          "height and channels, respectively --- using the `timeit` module ...")
+    print("Timing (with `timeit`): `" + implementation + "` on '" + imagefile +
+          "':", shape[0], "px,", shape[1], "px,", shape[2], "channels ...")
 
-    # Run and time tests
-    averages[implementation] = timeit(command, setup=setup, number=number) / number
+    # Run and time tests. Place in dictionary of all averages (for stats below)
+    averages[implementation] = round(timeit(command,
+                                            setup=setup,
+                                            number=number) / number, ndigits=6)
 
-    # Print results
-    print("Average runtime running", implementation,
-          "after", number, "runs:", averages[implementation], "s")
-  
-  for implementation, average in averages:
-    # Do stuff ...
+  # Print results
+  print("Average runtimes after", number, "runs (each):")
+  for implementation, average in averages.items():
+    print("  `" + implementation + "`:", averages[implementation], "s")
+
+  # Print execution times normalized to fastest implementation, if more than
+  # one implementation is tested
+  if len(averages) > 1:
+    print("Normalized to fastest implementation time:")
+    fastest_implementation_time = min(averages.values())
+    for implementation, average in averages.items():
+      normalized_average = round(average/fastest_implementation_time, ndigits=6)
+      print("  `" + implementation + "`:", normalized_average)
 
 def save_image(inputfile, image, suffix="_grayscale"):
   # Convert datatype in numpy array to integers (not floats).

@@ -1,7 +1,7 @@
 from cv2 import imread
 from numba import jit, uint8
 from sys import argv
-from save_image import save_image
+from utils import save_image
 
 def numba_color2gray(inputfile):
 
@@ -12,14 +12,14 @@ def numba_color2gray(inputfile):
   @jit(uint8[:,:,:](uint8[:,:,:]), nopython=True)
   def f(image):
 
-    # Extract heigth and width of image; create aliases for channels for clarity.
+    # Extract heigth and width of image; create aliases for channels for clarity
     heigth, width, channels = image.shape
     b, g, r = range(channels)
 
     # Iterate over all x,y-pixels
     for x in range(width):
       for y in range(heigth):
-        # Set pixel over all channels to the weighted, normalized, sum.
+        # Set pixel over all channels to the weighted, normalized, sum
         image[y,x,:] = image[y,x,b]*0.07 + image[y,x,g]*0.72 + image[y,x,r]*0.21
 
     return image

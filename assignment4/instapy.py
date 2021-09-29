@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from python_color2gray import python_color2gray
 from numpy_color2gray import numpy_color2gray
 from numba_color2gray import numba_color2gray
@@ -28,6 +30,6 @@ if __name__ == "__main__":
         timer(inputfile)
       exit(0)
 
-  print("usage: pystagram.py <python|numpy|numba> <image>")
-  print("       pystagram.py timer <image> [python] [numpy] [numba]")
+  print("usage: instapy <python|numpy|numba> <image>")
+  print("       instapy timer <image> [python] [numpy] [numba]")
   exit(1)

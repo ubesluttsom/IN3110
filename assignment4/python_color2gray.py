@@ -1,6 +1,6 @@
 from cv2 import imread
 from sys import argv
-from save_image import save_image
+from utils import save_image
 
 def python_color2gray(inputfile):
 

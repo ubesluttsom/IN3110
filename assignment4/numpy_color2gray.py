@@ -1,7 +1,7 @@
 from cv2 import imread
 from numpy import array
 from sys import argv
-from save_image import save_image
+from utils import save_image
 
 def numpy_color2gray(inputfile):
 
