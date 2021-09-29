@@ -1,21 +1,25 @@
 import timeit
 
-n = 10
+def time(implementations=("python_color2gray",
+                          "numpy_color2gray",
+                          "numba_color2gray"),
+                          imagefile,
+                          number=10):
 
-implementation = "pyton_color2gray"
-print("Timing:", implementation)
-average = timeit.timeit('python_color2gray("rain.jpg")', setup='from python_color2gray import python_color2gray', number=n)
-print("Average runtime running", implementation, "after", n, "runs:", average, "s")
-print("Timing preformed using: `timeit`")
+  # Iterate over the tuple (or other iterable) of implementations.
+  for implementation in implemenations:
 
-implementation = "numpy_color2gray"
-print("Timing:", implementation)
-average = timeit.timeit('numpy_color2gray("rain.jpg")',  setup='from numpy_color2gray import numpy_color2gray'  , number=n)
-print("Average runtime running", implementation, "after", n, "runs:", average, "s")
-print("Timing preformed using: `timeit`")
+    # Check if `implementation` is valid
+    if implementation not in ("python_color2gray",
+                              "numpy_color2gray",
+                              "numba_color2gray"):
+      raise ValueError("Error: implementation must be one of: " +
+            "'python_color2gray', 'numpy_color2gray' or 'numba_color2gray'")
+      exit(1)
 
-implementation = "numba_color2gray"
-print("Timing:", implementation)
-average = timeit.timeit('numba_color2gray("rain.jpg")',  setup='from numba_color2gray import numba_color2gray'  , number=n)
-print("Average runtime running", implementation, "after", n, "runs:", average, "s")
-print("Timing preformed using: `timeit`")
+    print("Timing:", implementation, "on image with dimentions", image.shape)
+    command = ''.join(implementation, "(", imagefile, ")")
+    setup   = ' '.join("from", implementation, "import", "implementation")
+    average = timeit.timeit(command, setup=setup, number=number)
+    print("Average runtime running", implementation, "after", n, "runs:", average, "s")
+    print("Timing preformed using: `timeit`")

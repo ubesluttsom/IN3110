@@ -1,6 +1,7 @@
 from python_color2gray import python_color2gray
 from numpy_color2gray import numpy_color2gray
 from numba_color2gray import numba_color2gray
+from utils import timer
 import sys
 
 if __name__ == "__main__":
@@ -20,8 +21,13 @@ if __name__ == "__main__":
       numba_color2gray(inputfile)
       exit(0)
 
-  else:
-    print("usage: pystagram.py numpy <input image>")
-    print("       pystagram.py python <input image>")
-    print("       pystagram.py numba <input image>")
-    exit(1)
+    if sys.argv[1] == "timer":
+      if len(sys.argv) > 3:
+          timer(inputfile, implementations=sys.argv[3].split(' '))
+      else:
+        timer(inputfile)
+      exit(0)
+
+  print("usage: pystagram.py <python|numpy|numba> <image>")
+  print("       pystagram.py timer <image> [python] [numpy] [numba]")
+  exit(1)
