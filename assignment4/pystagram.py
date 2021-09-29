@@ -1,6 +1,7 @@
 import cv2
 import numpy
 import sys
+from numba import jit, float32, uint8
 
 def numpy_color2gray(inputfile):
 
@@ -33,6 +34,30 @@ def python_color2gray(inputfile):
 
   save_image(inputfile, image)
 
+def numba_color2gray(inputfile):
+
+  # Read original image from file
+  image = cv2.imread(inputfile)
+
+  # Define function `f()` for Numba to compile
+  @jit(uint8[:,:,:](uint8[:,:,:]))
+  def f(image):
+
+    # Extract heigth and width of image; create aliases for channels for clarity.
+    heigth, width, channels = image.shape
+    b, g, r = range(channels)
+
+    for x in range(width):
+      for y in range(heigth):
+        # Set pixel over all channels to the weighted, normalized, sum.
+        image[y,x,:] = image[y,x,b]*0.07 + image[y,x,g]*0.72 + image[y,x,r]*0.21
+    return image
+  
+  # Call optimized function
+  image = f(image)
+
+  save_image(inputfile, image)
+
 def save_image(inputfile, image, suffix="_grayscale"):
   # Convert datatype in numpy array to integers (not floats).
   image = image.astype("uint8")
@@ -56,7 +81,12 @@ if __name__ == "__main__":
       python_color2gray(inputfile)
       exit(0)
 
+    if sys.argv[1] == "numba":
+      numba_color2gray(inputfile)
+      exit(0)
+
   else:
     print("usage: pystagram.py numpy <input image>")
     print("       pystagram.py python <input image>")
+    print("       pystagram.py numba <input image>")
     exit(-1)
