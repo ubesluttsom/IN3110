@@ -15,7 +15,9 @@ def python_color2gray(inputfile):
   for x in range(width):
     for y in range(heigth):
       # Set pixel over all channels to the weighted, normalized, sum.
-      image[y,x,:] = image[y,x,b]*0.07 + image[y,x,g]*0.72 + image[y,x,r]*0.21
+      image[y,x,0] = \
+      image[y,x,1] = \
+      image[y,x,2] = image[y,x,b]*0.07 + image[y,x,g]*0.72 + image[y,x,r]*0.21
 
   save_image(inputfile, image)
 
