@@ -12,39 +12,40 @@ import argparse
 if __name__ == "__main__":
 
   # Initialize the argument parser, and define some arguments
-  parser = argparse.ArgumentParser(description="Filter sum' images.")
-  parser.add_argument('-f', '--file', type=str,
+  parser = argparse.ArgumentParser(description="Filter some images.")
+  parser.add_argument('file', metavar='FILE', type=str,
                       help='the filename of file to apply filter to')
   parser.add_argument('-i', '--implement',
-                      choices=set(['python', 'numba', 'numpy']),
-                      action='append', type=str,
-                      help='choose the implementation(s)')
-  parser.add_argument('-t', '--time', action='store_true',
-                      help='do runtime statistics.')
-  parser.add_argument('-se', '--sepia', action='store_true',
-                      help='apply sepia filter')
+                      choices=('python', 'numba', 'numpy'),
+                      action='extend', type=str, nargs='+',
+                      help='choose the implementation(s), default: \'numpy\'')
+  parser.add_argument('-r', '--runtime', action='store_true',
+                      help='do runtime statistics')
+  parser.add_argument('-se', '--sepia', type=float, nargs='?', const=1.0,
+                      help='apply sepia filter, optional 0-1 float for '
+                           'desired level')
   parser.add_argument('-g', '--gray', action='store_true',
-                      help='apply rayscale filter')
+                      help='apply greyscale filter')
 
   args = parser.parse_args()
 
   if args.file:
 
-    # If the `time` argument is passed, let that function do the rest, and
+    # If the `runtime` argument is passed, let that function do the rest, and
     # exit. `time()` will run on the entire set of `--implement` arguments
     # passed, i.e. running multiple implementation tests is allowed.
 
-    if args.time:
+    if args.runtime:
       if args.implement:
-        timer(args.file, implementations=args.implement,
+        timer(args.file, implementations=set(args.implement),
               gray=args.gray, sepia=args.sepia)
       else:
         timer(args.file, gray=args.gray, sepia=args.sepia)
       exit(0)
 
     # Else, just do filtering. If no `--implement` argument is passed, use
-    # numpy. If sevaral `-i` arguments are passed (which is kinda pointless
-    # without `--time`, but yeah), the preference is numpy > numba > python.
+    # numpy. If several `-i` arguments are passed (which is kinda pointless
+    # without `--runtime`, but yeah), the preference is numpy > numba > python.
 
     if args.gray:
       if (not args.implement) or 'numpy' in args.implement:
@@ -54,12 +55,12 @@ if __name__ == "__main__":
       elif 'python' in args.implement:
         python_color2gray(args.file)
 
-    elif args.sepia:
+    elif args.sepia != None:
       if (not args.implement) or 'numpy' in args.implement:
-        numpy_color2sepia(args.file)
+        numpy_color2sepia(args.file, level=args.sepia)
       elif 'numba' in args.implement:
-        numba_color2sepia(args.file)
+        numba_color2sepia(args.file, level=args.sepia)
       elif 'python' in args.implement:
-        python_color2sepia(args.file)
+        python_color2sepia(args.file, level=args.sepia)
 
   exit(0)
