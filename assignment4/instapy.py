@@ -18,14 +18,19 @@ if __name__ == "__main__":
   parser.add_argument('-i', '--implement',
                       choices=('python', 'numba', 'numpy'),
                       action='extend', type=str, nargs='+',
-                      help='choose the implementation(s), default: \'numpy\'')
-  parser.add_argument('-r', '--runtime', action='store_true',
-                      help='do runtime statistics')
-  parser.add_argument('-se', '--sepia', type=float, nargs='?', const=1.0,
+                      help='choose the implementation(s). Default: \'numpy\'')
+  parser.add_argument('-r', '--runtime', metavar='N',
+                      type=int, nargs='?', const=3,
+                      help='do runtime statistics, optional N number of runs. '
+                           'Default: 3')
+  parser.add_argument('-se', '--sepia', metavar='LEVEL',
+                      type=float, nargs='?', const=1.0,
                       help='apply sepia filter, optional 0-1 float for '
-                           'desired level')
-  parser.add_argument('-g', '--gray', action='store_true',
-                      help='apply greyscale filter')
+                           'desired level. Default: 1.0')
+  parser.add_argument('-g', '--gray', metavar='LEVEL',
+                      type=float, nargs='?', const=1.0,
+                      help='apply greyscale filter, optional 0-1 float for '
+                           'desired level. Default: 1.0')
 
   args = parser.parse_args()
 
@@ -35,25 +40,25 @@ if __name__ == "__main__":
     # exit. `time()` will run on the entire set of `--implement` arguments
     # passed, i.e. running multiple implementation tests is allowed.
 
-    if args.runtime:
+    if args.runtime != None:
       if args.implement:
         timer(args.file, implementations=set(args.implement),
-              gray=args.gray, sepia=args.sepia)
+              number=args.runtime, gray=args.gray, sepia=args.sepia)
       else:
-        timer(args.file, gray=args.gray, sepia=args.sepia)
+        timer(args.file, number=args.runtime, gray=args.gray, sepia=args.sepia)
       exit(0)
 
     # Else, just do filtering. If no `--implement` argument is passed, use
     # numpy. If several `-i` arguments are passed (which is kinda pointless
     # without `--runtime`, but yeah), the preference is numpy > numba > python.
 
-    if args.gray:
+    if args.gray != None:
       if (not args.implement) or 'numpy' in args.implement:
-        numpy_color2gray(args.file)
+        numpy_color2gray(args.file, level=args.gray)
       elif 'numba' in args.implement:
-        numba_color2gray(args.file)
+        numba_color2gray(args.file, level=args.gray)
       elif 'python' in args.implement:
-        python_color2gray(args.file)
+        python_color2gray(args.file, level=args.gray)
 
     elif args.sepia != None:
       if (not args.implement) or 'numpy' in args.implement:

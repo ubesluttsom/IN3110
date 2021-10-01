@@ -3,7 +3,7 @@ from numpy import array
 from sys import argv
 from utils import save_image
 
-def numpy_color2gray(inputfile):
+def numpy_color2gray(inputfile, level=1.0):
 
   # Read original image from file
   image = imread(inputfile)
