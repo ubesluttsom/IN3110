@@ -3,7 +3,7 @@ from numba import jit, uint8
 from sys import argv
 from utils import save_image
 
-def numba_color2gray(inputfile):
+def numba_color2gray(inputfile, level=1.0):
 
   # Read original image from file
   image = imread(inputfile)
