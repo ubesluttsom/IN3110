@@ -1,0 +1,11 @@
+Timing (with `timeit`): `numpy_color2sepia` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Timing (with `timeit`): `numba_color2sepia` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Timing (with `timeit`): `python_color2sepia` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Average runtimes after 10 runs (each):
+  `numpy_color2sepia`: 0.009861 s
+  `numba_color2sepia`: 0.167279 s
+  `python_color2sepia`: 3.533153 s
+Normalized to fastest implementation time:
+  `numpy_color2sepia`: 1.0
+  `numba_color2sepia`: 16.963695
+  `python_color2sepia`: 358.295609

@@ -1,2 +1,11 @@
-Timing: numba_color2gray on image with shape (400, 600, 3) --- width, height and channels, respectively --- using the `timeit` module ...
-Average runtime running numba_color2gray after 10 runs: 0.2125116828 s
+Timing (with `timeit`): `numpy_color2gray` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Timing (with `timeit`): `python_color2gray` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Timing (with `timeit`): `numba_color2gray` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Average runtimes after 10 runs (each):
+  `numpy_color2gray`: 0.011529 s
+  `python_color2gray`: 0.856582 s
+  `numba_color2gray`: 0.08382 s
+Normalized to fastest implementation time:
+  `numpy_color2gray`: 1.0
+  `python_color2gray`: 74.298031
+  `numba_color2gray`: 7.270362

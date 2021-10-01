@@ -1,0 +1,8 @@
+Timing (with `timeit`): `python_color2sepia` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Timing (with `timeit`): `numpy_color2sepia` on 'rain.jpg': 400 px, 600 px, 3 channels ...
+Average runtimes after 10 runs (each):
+  `python_color2sepia`: 3.585385 s
+  `numpy_color2sepia`: 0.009814 s
+Normalized to fastest implementation time:
+  `python_color2sepia`: 365.333707
+  `numpy_color2sepia`: 1.0
