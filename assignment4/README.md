@@ -42,7 +42,6 @@ $ instapy rain.jpg -se -i python numpy numba -r > numba_report_color2sepia.txt
 
   > The function `sepia_image(input filename, output filename=None)` should be
   > implemented in the same way as `grayscale_image()`.
-
 - [ ] Create unit test `test_instapy.py` using `pytest`. This can be added
   under `instapy.utils.test_instapy`, maybe?
 - [ ] Improve the user interface: implement all arguments listed in assignment.
