@@ -26,15 +26,16 @@ if __name__ == "__main__":
                            'Default: 3')
 
   filters = parser.add_mutually_exclusive_group()
-  filters.add_argument('-se', '--sepia', metavar='LEVEL',
+  filters.add_argument('-se', '--sepia', metavar='float',
                        type=float, nargs='?', const=1.0,
                        help='apply sepia filter, optional 0-1 float for '
-                            'desired level. Default: 1.0')
-  filters.add_argument('-g', '--gray', metavar='LEVEL',
+                            'desired level; where 0 is no filter, and 1.0 is '
+                            'max filtering. Default: 1.0')
+  filters.add_argument('-g', '--gray', metavar='float',
                        type=float, nargs='?', const=1.0,
-                       help='apply greyscale filter, ~~optional 0-1 float for '
-                            'desired level~~[NOT IMPLEMENTED YET!]. Default: '
-                            '1.0')
+                       help='apply greyscale filter, optional 0-1 float for '
+                            'desired level; where 0 is no filter, and 1.0 is '
+                            'max filtering. Default: 1.0')
 
   args = parser.parse_args()
 
@@ -59,6 +60,12 @@ if __name__ == "__main__":
       # python.
 
       elif args.gray != None:
+
+        # Though the results of filter levels higher than 1.0 look entertaining,
+        # we'll take the boring route of prohibiting such values.
+        args.gray = min([1.0, args.gray])
+        args.gray = max([0.0, args.gray])
+
         if (not args.implement) or 'numpy' in args.implement:
           numpy_color2gray(file, level=args.gray)
         elif 'numba' in args.implement:
@@ -67,11 +74,14 @@ if __name__ == "__main__":
           python_color2gray(file, level=args.gray)
 
       elif args.sepia != None:
+
+        # Same as gray-filter above: limit levels to the interval [0.0, 1.0].
+        args.sepia = min([1.0, args.sepia])
+        args.sepia = max([0.0, args.sepia])
+
         if (not args.implement) or 'numpy' in args.implement:
           numpy_color2sepia(file, level=args.sepia)
         elif 'numba' in args.implement:
           numba_color2sepia(file, level=args.sepia)
         elif 'python' in args.implement:
           python_color2sepia(file, level=args.sepia)
-
-  exit(0)
