@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from python_color2gray import python_color2gray
-from numpy_color2gray import numpy_color2gray
-from numba_color2gray import numba_color2gray
-from python_color2sepia import python_color2sepia
-from numpy_color2sepia import numpy_color2sepia
-from numba_color2sepia import numba_color2sepia
-from utils import timer
+from instapy.gray.python_color2gray import python_color2gray
+from instapy.gray.numpy_color2gray import numpy_color2gray
+from instapy.gray.numba_color2gray import numba_color2gray
+from instapy.sepia.python_color2sepia import python_color2sepia
+from instapy.sepia.numpy_color2sepia import numpy_color2sepia
+from instapy.sepia.numba_color2sepia import numba_color2sepia
+from instapy.utils.utils import timer
 import argparse
 
 if __name__ == "__main__":

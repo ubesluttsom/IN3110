@@ -1,6 +1,6 @@
 from cv2 import imread
 from sys import argv
-from utils import save_image
+from instapy.utils.utils import save_image
 
 def python_color2sepia(inputfile, level=1.0):
 

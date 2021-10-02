@@ -1,7 +1,7 @@
 from cv2 import imread
 from numba import jit, uint16
 from sys import argv
-from utils import save_image
+from instapy.utils.utils import save_image
 
 def numba_color2sepia(inputfile, level=1.0):
 

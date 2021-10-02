@@ -1,7 +1,7 @@
 from cv2 import imread
 from numpy import array
 from sys import argv
-from utils import save_image
+from instapy.utils.utils import save_image
 
 def numpy_color2sepia(inputfile, level=1.0):
 

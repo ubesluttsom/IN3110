@@ -1,13 +1,14 @@
 from cv2 import imread
 from numpy import array
 from sys import argv
-from utils import save_image
+from instapy.utils.utils import save_image
 
 def numpy_color2gray(inputfile, level=1.0):
 
   # Read original image from file
   image = imread(inputfile)
 
+  # Weights from the assignment text, in BRG order
   weights = array([[ 0.07, 0.72, 0.21 ]])
 
   # Greyscale matrix in BGR order, with optional `level`-weighting. If `level`
@@ -22,10 +23,18 @@ def numpy_color2gray(inputfile, level=1.0):
 
   # Do the matrix multiplication. There might be a better way to do this, but
   # this seems pretty efficient. In the `image` and gray_matrix variables 0, 1,
-  # and 2 represents the color channels blue, green, and red, respectively.
-  image[:,:,0] = (image * gray_matrix[0]).sum(axis=2)
-  image[:,:,1] = (image * gray_matrix[1]).sum(axis=2)
-  image[:,:,2] = (image * gray_matrix[2]).sum(axis=2)
+  # and 2 represents the color channels blue, green, and red, respectively. I
+  # Define the `level == 1.0` case explicitly to ensure values are equal across
+  # channels, and not have faint color appear in the resulting image (should
+  # also be slightly more efficient, with less summations).
+  if level == 1.0:
+    image[:,:,0] = \
+    image[:,:,1] = \
+    image[:,:,2] = (image * weights).sum(axis=2)
+  else:
+    image[:,:,0] = (image * gray_matrix[0]).sum(axis=2)
+    image[:,:,1] = (image * gray_matrix[1]).sum(axis=2)
+    image[:,:,2] = (image * gray_matrix[2]).sum(axis=2)
 
   save_image(inputfile, image)
 
