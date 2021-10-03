@@ -22,7 +22,7 @@ def save_image(outputfile, image, suffix=None):
   else:
     imwrite(outputfile, image)
 
-def runtime(image,
+def runtime(inputfile,
             implementations=("python",
                              "numpy",
                              "numba"),
@@ -57,12 +57,14 @@ def runtime(image,
         raise ValueError("No filter selected for testing")
 
     # Construct necessary info and parameters
-    shape   = image.shape
-    command = f"{implementation}('{image}', level={level})"
-    setup   = f"from {module}.{implementation} import {implementation}"
+    shape   = read_image(inputfile).shape
+    command = f"{implementation}(image, level={level})"
+    setup   = f"from {module}.{implementation} import {implementation}; " \
+              f"from instapy.utils import read_image; " \
+              f"image = read_image('{inputfile}')"
 
     # Inform user of test start
-    print(f"Timing (with `timeit`): `{implementation}` on '{image}': "
+    print(f"Timing (with `timeit`): `{implementation}` on `{inputfile}`: "
           f"{shape[0]} px, {shape[1]} px, {shape[2]} channels ...")
 
     # Run and time tests. Place in dictionary of all averages (for stats below)

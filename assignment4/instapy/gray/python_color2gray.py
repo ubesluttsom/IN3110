@@ -12,7 +12,9 @@ def python_color2gray(image, level=1.0):
   # see faint colors in the resulting image.
   if level == 1.0:
     gray_matrix = \
-        [0.07, 0.72, 0.21]
+        [[0.07, 0.72, 0.21],
+         [0.07, 0.72, 0.21],
+         [0.07, 0.72, 0.21]]
   else:
     gray_matrix = \
         [[0.07*level+(1-level), 0.72*level,           0.21*level          ],
@@ -20,7 +22,7 @@ def python_color2gray(image, level=1.0):
          [0.07*level,           0.72*level,           0.21*level+(1-level)]]
 
   # Extract height and width of image; create aliases for channels for clarity
-  heigth, width, channels = image.shape
+  height, width, channels = image.shape
   b, g, r = range(channels)
 
   # Again, I define the `1.0` case explicitly to ensure all channels are
@@ -29,18 +31,18 @@ def python_color2gray(image, level=1.0):
   if level == 1.0:
     # Iterate over all x,y-pixels
     for x in range(width):
-      for y in range(heigth):
+      for y in range(height):
           # Assign all channels to the same sum to get true gray colors, and
           # avoid floating point rounding errors.
           image[y,x,b] = \
           image[y,x,r] = \
-          image[y,x,g] = image[y,x,b]*gray_matrix[b] + \
-                         image[y,x,g]*gray_matrix[g] + \
-                         image[y,x,r]*gray_matrix[r]
+          image[y,x,g] = image[y,x,b]*gray_matrix[b][b] + \
+                         image[y,x,g]*gray_matrix[g][g] + \
+                         image[y,x,r]*gray_matrix[r][r]
   else:
     # Iterate over all x,y-pixels
     for x in range(width):
-      for y in range(heigth):
+      for y in range(height):
         for c in range(channels):
           # Do the matrix–vector multiplication manually
           image[y,x,c] = image[y,x,b]*gray_matrix[c][b] + \

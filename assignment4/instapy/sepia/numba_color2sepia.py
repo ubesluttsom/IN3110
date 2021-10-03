@@ -2,7 +2,7 @@ from numba import jit, uint16
 from instapy.utils import save_image, read_image
 from sys import argv
 
-def numba_color2sepia(inputfile, level=1.0):
+def numba_color2sepia(image, level=1.0):
 
   # Convert type to higher bit, to avoid overflow. NB! I'm a bit unsure if I'm
   # allowed to do this operation, considering it's tecnically a Numpy function

@@ -32,6 +32,11 @@ if __name__ == "__main__":
   output.add_argument('-su', '--suffix', metavar='SUFFIX', type=str,
                       help='suffix to add to (each) input filename when '
                            'saving output file(s)')
+  # Add argument for testing runtime. Doesn't write filtered image to file.
+  output.add_argument('-r', '--runtime', metavar='N',
+                      type=int, nargs='?', const=3,
+                      help='do runtime statistics without writing image to '
+                           'file, optional N number of runs (default: 3)')
 
   # Add argument for which implementation to use. Multiple values are allowed,
   # and constructive for testing runtime.
@@ -40,12 +45,6 @@ if __name__ == "__main__":
                       action='extend', type=str, nargs='+',
                       help='choose the implementation(s), otherwise use '
                            '\'numpy\'')
-
-  # Add argument for testing runtime.
-  parser.add_argument('-r', '--runtime', metavar='N',
-                      type=int, nargs='?', const=3,
-                      help='do runtime statistics, optional N number of runs,'
-                           ' default to 3')
 
   # Add a mutually exclusive group for filters; you can only apply one filter
   # at a time. Print error message if attempted.
@@ -72,11 +71,11 @@ if __name__ == "__main__":
 
     if args.runtime != None:
       if args.implement:
-        instapy.utils.runtime(image, implementations=set(args.implement),
-                              number=args.runtime, gray=args.gray,
-                              sepia=args.sepia)
+        instapy.utils.runtime(file, number=args.runtime, gray=args.gray,
+                              sepia=args.sepia,
+                              implementations=set(args.implement))
       else:
-        instapy.utils.runtime(image, number=args.runtime, gray=args.gray,
+        instapy.utils.runtime(file, number=args.runtime, gray=args.gray,
                               sepia=args.sepia)
 
     # Else, just do filtering. If no `--implement` argument is passed, use
@@ -90,9 +89,6 @@ if __name__ == "__main__":
       # such values.
       args.gray = min([1.0, args.gray])
       args.gray = max([0.0, args.gray])
-
-      if args.suffix != None:
-        args.suffix = '_gray'
 
       if (not args.implement) or 'numpy' in args.implement:
         image = gray_numpy(image, level=args.gray)

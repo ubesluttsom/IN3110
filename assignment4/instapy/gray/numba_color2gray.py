@@ -7,6 +7,8 @@ from sys import argv
 @jit(uint8[:,:,:](uint8[:,:,:], float32), nopython=True)
 def numba_color2gray(image, level=1.0):
 
+  # >> THIS FUNCTION BODY IS IDENTICAL TO `instapy.gray.python_color2gray` <<
+
   # Greyscale matrix in BGR order, with optional `level`-weighting. If `level`
   # == 0.0, this becomes the identity matrix (which does nothing to the colors
   # when multiplied in); if `level` == 1.0, we get the weights specified in the
