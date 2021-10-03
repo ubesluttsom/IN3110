@@ -35,7 +35,7 @@ $ instapy rain.jpg -se -i python numpy numba -r > numba_report_color2sepia.txt
   `instapy.gray.python_color2gray` in function body.~~ It does not.
 - [x] Change structure to `instapy/utils.py` with `instapy.utils.runtime()`,
   `instapy.utils.read_image()` and `instapy.utils.save_image()`.
-- [ ] Create the following functions:
+- [x] Create the following functions:
   > Include a function `grayscale_image(input filename, output filename=None)`
   > which returns a numpy (unsigned) integer 3D array of a gray image of input
   > filename. If `output_filename` is supplied, the created image should also
