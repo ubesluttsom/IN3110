@@ -1,12 +1,12 @@
-from cv2 import imread
 from numba import jit, uint16
+from instapy.utils import save_image, read_image
 from sys import argv
-from instapy.utils.utils import save_image
 
 def numba_color2sepia(inputfile, level=1.0):
 
-  # Read original image from file
-  image = imread(inputfile)
+  # Convert type to higher bit, to avoid overflow. NB! I'm a bit unsure if I'm
+  # allowed to do this operation, considering it's tecnically a Numpy function
+  # call? Maybe I should rather put this in the loop below?
   image = image.astype("uint16")
 
   # Define function `f()` for Numba to compile
@@ -51,18 +51,16 @@ def numba_color2sepia(inputfile, level=1.0):
     return image
   
   # Call optimized function
-  image = f(image)
-
-  save_image(inputfile, image, suffix='_sepia')
+  return f(image)
 
 if __name__ == "__main__":
   if len(argv) > 1:
-    inputfile = argv[1]
+    image = read_image(argv[1])
     if argv[2] != None:
-      numba_color2sepia(inputfile, float(argv[2]))
+      image = numba_color2gray(image, float(argv[2]))
     else:
-      numba_color2sepia(inputfile)
-    exit(0)
+      image = numba_color2gray(image)
+    save_image(arg[1], image, suffix='_sepia')
   else:
-    print("usage: numba_color2sepia.py FILE [0.0-1.0]")
+    print("usage: numba_color2gray.py FILE [0.0-1.0]")
     exit(1)

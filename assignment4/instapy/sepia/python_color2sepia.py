@@ -1,11 +1,11 @@
-from cv2 import imread
+from instapy.utils import save_image, read_image
 from sys import argv
-from instapy.utils.utils import save_image
 
-def python_color2sepia(inputfile, level=1.0):
+def python_color2sepia(image, level=1.0):
 
-  # Read original image from file
-  image = imread(inputfile)
+  # Convert type to higher bit, to avoid overflow. NB! I'm a bit unsure if I'm
+  # allowed to do this operation, considering it's tecnically a Numpy function
+  # call? Maybe I should rather put this in the loop below?
   image = image.astype("uint16")
 
   # Extract height and width of image; create aliases for channels for clarity.
@@ -44,15 +44,16 @@ def python_color2sepia(inputfile, level=1.0):
       for c in range(channels):
         image[y,x,c] = image[y,x,c] * scalar
 
-  save_image(inputfile, image, suffix='_sepia')
+  return image
 
 if __name__ == "__main__":
   if len(argv) > 1:
-    inputfile = argv[1]
+    image = read_image(argv[1])
     if argv[2] != None:
-      python_color2sepia(inputfile, float(argv[2]))
+      image = python_color2gray(image, float(argv[2]))
     else:
-      python_color2sepia(inputfile)
-    exit(0)
+      image = python_color2gray(image)
+    save_image(arg[1], image, suffix='_sepia')
   else:
-    print("usage: python_color2sepia.py FILE [0.0-1.0]")
+    print("usage: python_color2gray.py FILE [0.0-1.0]")
+    exit(1)

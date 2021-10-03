@@ -29,7 +29,7 @@ $ instapy rain.jpg -se -i python numpy numba -r > numba_report_color2sepia.txt
 ## TODOs
 
 - [x] Make it a package.
-- [ ] Factor out file operations from filter modules. Put them instead in
+- [x] Factor out file operations from filter modules. Put them instead in
   `instapy.utils`.
 - [ ] Test if `instapy.gray.numba_color2gray` works by just calling
   `instapy.gray.python_color2gray` in function body.

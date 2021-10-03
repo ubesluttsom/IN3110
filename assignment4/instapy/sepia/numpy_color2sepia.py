@@ -1,12 +1,10 @@
-from cv2 import imread
 from numpy import array
+from instapy.utils import save_image, read_image
 from sys import argv
-from instapy.utils.utils import save_image
 
-def numpy_color2sepia(inputfile, level=1.0):
+def numpy_color2sepia(image, level=1.0):
 
-  # Read original image from file
-  image = imread(inputfile)
+  # Convert type to higher bit, to avoid overflow.
   image = image.astype("uint16")
 
   # Sepia matrix, in BGR order. Here I've fiddled around with the `level`-weight
@@ -34,18 +32,17 @@ def numpy_color2sepia(inputfile, level=1.0):
   # Scale all colors such that `max_color` * `scalar` == 255.
   max_color = image.max()
   scalar = 255 / max_color
-  image = image * scalar
 
-  save_image(inputfile, image, suffix='_sepia')
+  return image * scalar
 
 if __name__ == "__main__":
   if len(argv) > 1:
-    inputfile = argv[1]
+    image = read_image(argv[1])
     if argv[2] != None:
-      numpy_color2sepia(inputfile, float(argv[2]))
+      image = numpy_color2gray(image, float(argv[2]))
     else:
-      numpy_color2sepia(inputfile)
-    exit(0)
+      image = numpy_color2gray(image)
+    save_image(arg[1], image, suffix='_sepia')
   else:
     print("usage: numpy_color2gray.py FILE [0.0-1.0]")
     exit(1)

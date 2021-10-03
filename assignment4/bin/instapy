@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
-from instapy.gray.python_color2gray import python_color2gray
-from instapy.gray.numpy_color2gray import numpy_color2gray
-from instapy.gray.numba_color2gray import numba_color2gray
-from instapy.sepia.python_color2sepia import python_color2sepia
-from instapy.sepia.numpy_color2sepia import numpy_color2sepia
-from instapy.sepia.numba_color2sepia import numba_color2sepia
-from instapy.utils.utils import timer
+# Some of the module names are a bit unwieldy (as per assignment
+# specification), so I alias some of them.
+from instapy.gray.python_color2gray   import python_color2gray  as gray_python
+from instapy.gray.numpy_color2gray    import numpy_color2gray   as gray_numpy
+from instapy.gray.numba_color2gray    import numba_color2gray   as gray_numba
+from instapy.sepia.python_color2sepia import python_color2sepia as sepia_python
+from instapy.sepia.numpy_color2sepia  import numpy_color2sepia  as sepia_numpy
+from instapy.sepia.numba_color2sepia  import numba_color2sepia  as sepia_numba
+import instapy.utils
 import argparse
 
 if __name__ == "__main__":
@@ -19,6 +21,17 @@ if __name__ == "__main__":
   parser.add_argument('file', metavar='FILE',
                       action='extend', type=str, nargs='+',
                       help='the filename(s) of file(s) to apply filter to')
+
+  # Optional output filename. Doesn't really work when there are multiple input
+  # files to be processed; they will just overwrite the same filename over and
+  # over. Rather, use `--suffix`, which is mutually exclusive with `--out`.
+  output = parser.add_mutually_exclusive_group()
+  output.add_argument('-o', '--out', metavar='OUT', type=str,
+                      help='the output file name (will be overwritten if '
+                           'multiple input filenames)')
+  output.add_argument('-su', '--suffix', metavar='SUFFIX', type=str,
+                      help='suffix to add to (each) input filename when '
+                           'saving output file(s)')
 
   # Add argument for which implementation to use. Multiple values are allowed,
   # and constructive for testing runtime.
@@ -37,21 +50,21 @@ if __name__ == "__main__":
   # Add a mutually exclusive group for filters; you can only apply one filter
   # at a time. Print error message if attempted.
   filters = parser.add_mutually_exclusive_group()
-  filters.add_argument('-se', '--sepia', metavar='float',
+  filters.add_argument('-se', '--sepia', metavar='LVL',
                        type=float, nargs='?', const=1.0,
                        help='apply sepia filter, optional 0-1 float for '
-                            'desired level; where 0 is no filter, and 1.0 is '
-                            'max filtering')
-  filters.add_argument('-g', '--gray', metavar='float',
+                            'desired level')
+  filters.add_argument('-g', '--gray', metavar='LVL',
                        type=float, nargs='?', const=1.0,
                        help='apply greyscale filter, optional 0-1 float for '
-                            'desired level; where 0 is no filter, and 1.0 is '
-                            'max filtering')
+                            'desired level')
 
   # Parse the command line arguments, according to the rules defined above.
   args = parser.parse_args()
 
   for file in args.file:
+
+    image = instapy.utils.read_image(file)
 
     # If the `runtime` argument is passed, let that function do the rest, and
     # exit. `time()` will run on the entire set of `--implement` arguments
@@ -59,11 +72,12 @@ if __name__ == "__main__":
 
     if args.runtime != None:
       if args.implement:
-        timer(file, implementations=set(args.implement),
-              number=args.runtime, gray=args.gray, sepia=args.sepia)
+        instapy.utils.runtime(image, implementations=set(args.implement),
+                              number=args.runtime, gray=args.gray,
+                              sepia=args.sepia)
       else:
-        timer(file, number=args.runtime, gray=args.gray,
-              sepia=args.sepia)
+        instapy.utils.runtime(image, number=args.runtime, gray=args.gray,
+                              sepia=args.sepia)
 
     # Else, just do filtering. If no `--implement` argument is passed, use
     # numpy. If several `-i` arguments are passed (which is kinda pointless
@@ -77,12 +91,20 @@ if __name__ == "__main__":
       args.gray = min([1.0, args.gray])
       args.gray = max([0.0, args.gray])
 
+      if args.suffix != None:
+        args.suffix = '_gray'
+
       if (not args.implement) or 'numpy' in args.implement:
-        numpy_color2gray(file, level=args.gray)
+        image = gray_numpy(image, level=args.gray)
       elif 'numba' in args.implement:
-        numba_color2gray(file, level=args.gray)
+        image = gray_numba(image, level=args.gray)
       elif 'python' in args.implement:
-        python_color2gray(file, level=args.gray)
+        image = gray_python(image, level=args.gray)
+
+      # If no output filename or suffix was provided, save as output as input
+      # filename + `_gray`.
+      if args.out == None and args.suffix == None:
+        args.suffix = '_gray'
 
     elif args.sepia != None:
 
@@ -92,8 +114,19 @@ if __name__ == "__main__":
       args.sepia = max([0.0, args.sepia])
 
       if (not args.implement) or 'numpy' in args.implement:
-        numpy_color2sepia(file, level=args.sepia)
+        image = sepia_numpy(image, level=args.sepia)
       elif 'numba' in args.implement:
-        numba_color2sepia(file, level=args.sepia)
+        image = sepia_numba(image, level=args.sepia)
       elif 'python' in args.implement:
-        python_color2sepia(file, level=args.sepia)
+        image = sepia_python(image, level=args.sepia)
+
+      # If no output filename or suffix was provided, save as output as input
+      # filename + `_sepia`.
+      if args.out == None and args.suffix == None:
+        args.suffix = '_sepia'
+
+    # If a output filename was provided save image as this.
+    if args.out != None:
+      instapy.utils.save_image(args.out, image)
+    else:
+      instapy.utils.save_image(file, image, suffix=args.suffix)

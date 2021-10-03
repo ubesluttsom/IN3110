@@ -1,12 +1,8 @@
-from cv2 import imread
 from numpy import array
+from instapy.utils import save_image, read_image
 from sys import argv
-from instapy.utils.utils import save_image
 
-def numpy_color2gray(inputfile, level=1.0):
-
-  # Read original image from file
-  image = imread(inputfile)
+def numpy_color2gray(image, level=1.0):
 
   # Weights from the assignment text, in BRG order
   weights = array([[ 0.07, 0.72, 0.21 ]])
@@ -36,15 +32,16 @@ def numpy_color2gray(inputfile, level=1.0):
     image[:,:,1] = (image * gray_matrix[1]).sum(axis=2)
     image[:,:,2] = (image * gray_matrix[2]).sum(axis=2)
 
-  save_image(inputfile, image)
+  return image
 
 if __name__ == "__main__":
   if len(argv) > 1:
-    inputfile = argv[1]
+    image = read_image(argv[1])
     if argv[2] != None:
-      numpy_color2gray(inputfile, float(argv[2]))
+      image = numpy_color2gray(image, float(argv[2]))
     else:
-      numpy_color2gray(inputfile)
+      image = numpy_color2gray(image)
+    save_image(arg[1], image, suffix='_grayscale')
   else:
     print("usage: numpy_color2gray.py FILE [0.0-1.0]")
     exit(1)
