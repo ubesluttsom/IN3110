@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, tensordot
 from instapy.utils import save_image, read_image
 from sys import argv
 
@@ -12,12 +12,13 @@ def numpy_color2sepia(image, level=1.0):
   # (which does exactly nothing with the colors), and when `level` == 1 it
   # cancels out and becomes the original `sepia_matrix` proposed in the
   # assignment.
-  sepia_matrix = array([[0.272 , 0.534 , 0.131],
-                        [0.349 , 0.686 , 0.168],
-                        [0.393 , 0.769 , 0.189]])
-  sepia_matrix = sepia_matrix * level + array([[1-level,       0,       0],
-                                              [       0, 1-level,       0],
-                                              [       0,       0, 1-level]])
+  sepia_matrix = array([[0.131 , 0.534 , 0.272],
+                        [0.168 , 0.686 , 0.349],
+                        [0.189 , 0.769 , 0.393]])
+  if level != 1.0:
+    sepia_matrix = sepia_matrix * level + array([[1-level,       0,       0],
+                                                [       0, 1-level,       0],
+                                                [       0,       0, 1-level]])
 
   # Alias, for clarity
   blue, green, red = range(3)
@@ -25,9 +26,9 @@ def numpy_color2sepia(image, level=1.0):
   # Apply matrix on all pixels. There is probably a faster numpy solution than
   # this ... but maths, blergh.
   for color in range(3):
-    image[:,:,color] = image[:,:,blue]  * sepia_matrix[color][blue]  + \
+    image[:,:,color] = image[:,:,blue ] * sepia_matrix[color][blue ] + \
                        image[:,:,green] * sepia_matrix[color][green] + \
-                       image[:,:,red]   * sepia_matrix[color][red]
+                       image[:,:,red  ] * sepia_matrix[color][red  ]
 
   # Scale all colors such that `max_color` * `scalar` == 255.
   max_color = image.max()
@@ -39,10 +40,10 @@ if __name__ == "__main__":
   if len(argv) > 1:
     image = read_image(argv[1])
     if argv[2] != None:
-      image = numpy_color2gray(image, float(argv[2]))
+      image = numpy_color2sepia(image, float(argv[2]))
     else:
-      image = numpy_color2gray(image)
-    save_image(arg[1], image, suffix='_sepia')
+      image = numpy_color2sepia(image)
+    save_image(argv[1], image, suffix='_sepia')
   else:
-    print("usage: numpy_color2gray.py FILE [0.0-1.0]")
+    print("usage: numpy_color2sepia.py FILE [0.0-1.0]")
     exit(1)

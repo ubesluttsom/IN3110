@@ -18,9 +18,9 @@ def python_color2sepia(image, level=1.0):
   # cancels out and becomes the original `sepia_matrix` proposed in the
   # assignment.
   sepia_matrix = \
-      [[0.272*level+(1-level), 0.534*level          , 0.131*level          ],
-       [0.349*level          , 0.686*level+(1-level), 0.168*level          ],
-       [0.393*level          , 0.769*level          , 0.189*level+(1-level)]]
+      [[0.131*level+(1-level), 0.534*level          , 0.272*level          ],
+       [0.168*level          , 0.686*level+(1-level), 0.349*level          ],
+       [0.189*level          , 0.769*level          , 0.393*level+(1-level)]]
 
   # Initialize storage of highest color value; for correcting overflowing
   # color values by downscaling all pixel color values.
@@ -50,10 +50,10 @@ if __name__ == "__main__":
   if len(argv) > 1:
     image = read_image(argv[1])
     if argv[2] != None:
-      image = python_color2gray(image, float(argv[2]))
+      image = python_color2sepia(image, float(argv[2]))
     else:
-      image = python_color2gray(image)
-    save_image(arg[1], image, suffix='_sepia')
+      image = python_color2sepia(image)
+    save_image(argv[1], image, suffix='_sepia')
   else:
-    print("usage: python_color2gray.py FILE [0.0-1.0]")
+    print("usage: python_color2sepia.py FILE [0.0-1.0]")
     exit(1)
