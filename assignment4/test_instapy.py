@@ -1,4 +1,4 @@
-from numpy import array, array_equal, allclose, random, matmul
+from numpy import array, allclose, random
 # Some of the module names are a bit unwieldy (as per assignment
 # specification), so I alias them.
 from instapy.gray.python_color2gray   import python_color2gray  as gray_python
@@ -14,11 +14,10 @@ def generate_image(width=200, height=200):
   return random.randint(0, high=255, size=(height, width, 3)).astype('uint8')
 
 def generic_tester(
-    image,
     filter_implementation,
     filter_type,
-    N=100,
-    verbose=False):
+    image=generate_image(),
+    N=100):
 
   # Apply filter implementation we'd like to test to a copy of the image.
   filtered = image.copy()
@@ -28,12 +27,11 @@ def generic_tester(
   image    = image.astype('uint16')
   filtered = filtered.astype('uint16')
 
+  # Choose appropriate matrix for filter type.
   if filter_type == 'gray':
     filter_matrix = array([[0.07, 0.72, 0.21],
                            [0.07, 0.72, 0.21],
                            [0.07, 0.72, 0.21]])
-    scalars = array([[ 1.0, 1.0, 1.0 ]])
-
   elif filter_type == 'sepia':
     filter_matrix = array([[0.131 , 0.534 , 0.272],
                            [0.168 , 0.686 , 0.349],
@@ -48,11 +46,8 @@ def generic_tester(
     x = random.randint(0, high=image.shape[1])
     y = random.randint(0, high=image.shape[0])
 
-    # Calculate expected pixel based on chosen filter matrix. Scale the pixel
-    # same as we do in sepia filtering functions, `scalar` == 1 in the grey
-    # filtering case.
-    expected_pixel = matmul(image[y,x,:],
-                            filter_matrix.transpose())
+    # Calculate expected pixel based on chosen filter matrix.
+    expected_pixel = image[y,x,:] @ filter_matrix.T
 
     # Create variable for filter implementation's pixel
     filtered_pixel = filtered[y,x,:]
@@ -66,38 +61,26 @@ def generic_tester(
     # scaling factor. If the next pixels checked (next loop iteration) are
     # not also scaled by the same amount, finally raise the exception.
     except NameError: 
-      scalars = (filtered_pixel / expected_pixel)
       # Why do it this way? The problem is that we need to calculate the matrix
       # multiplication for the ENTIRE image to find the right scalars, which is
       # inefficient. What I do instead, is to check that all the pixels in the
       # filtered image is scaled by the same amount.
+      scalars = (filtered_pixel / expected_pixel)
 
-def test_gray_python(image=None, N=100, verbose=False):
-  if image == None:
-    image = generate_image()
-  return generic_tester(image, gray_python, 'gray', N=N, verbose=verbose)
+def test_gray_python():
+  return generic_tester(gray_python, 'gray')
 
-def test_gray_numpy(image=None, N=100, verbose=False):
-  if image == None:
-    image = generate_image()
-  return generic_tester(image, gray_numpy, 'gray', N=N, verbose=verbose)
+def test_gray_numpy():
+  return generic_tester(gray_numpy, 'gray')
 
-def test_gray_numba(image=None, N=100, verbose=False):
-  if image == None:
-    image = generate_image()
-  return generic_tester(image, gray_numba, 'gray', N=N, verbose=verbose)
+def test_gray_numba():
+  return generic_tester(gray_numba, 'gray')
 
-def test_sepia_python(image=None, N=100, verbose=False):
-  if image == None:
-    image = generate_image()
-  return generic_tester(image, sepia_python, 'sepia', N=N, verbose=verbose)
+def test_sepia_python():
+  return generic_tester(sepia_python, 'sepia')
 
-def test_sepia_numpy(image=None, N=100, verbose=False):
-  if image == None:
-    image = generate_image()
-  return generic_tester(image, sepia_numpy, 'sepia', N=N, verbose=verbose)
+def test_sepia_numpy():
+  return generic_tester(sepia_numpy, 'sepia')
 
-def test_sepia_numba(image=None, N=100, verbose=False):
-  if image == None:
-    image = generate_image()
-  return generic_tester(image, sepia_numba, 'sepia', N=N, verbose=verbose)
+def test_sepia_numba():
+  return generic_tester(sepia_numba, 'sepia')
