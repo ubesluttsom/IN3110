@@ -1,4 +1,5 @@
 from numba import jit, uint16
+from numpy import empty_like
 from instapy.utils import save_image, read_image
 from sys import argv
 
@@ -13,15 +14,19 @@ def numba_color2sepia(image, level=1.0):
   @jit(uint16[:,:,:](uint16[:,:,:]), nopython=True)
   def f(image):
 
-    # Extract height and width of image; create aliases for channels for clarity
-    heigth, width, channels = image.shape
-    b, g, r = range(channels)
+    # Make an `output` variable with same shape as input `image`. Hopefully this
+    # is allowed, despite `empty_like` is a Numpy function? Since it's for
+    # storage, as the assignmet opens for.
+    output = empty_like(image)
 
-    # Sepia matrix, in BGR order. Here I've fiddled around with the
-    # `level`-weight such that when `level` == 0, the `sepia_matrix` becomes the
-    # identity matrix (which does exactly nothing with the colors), and when
-    # `level` == 1 it cancels out and becomes the original `sepia_matrix`
-    # proposed in the assignment.
+    # Extract height and width of image.
+    height, width, colors = image.shape
+
+    # Sepia matrix, in BGR order. Here I've fiddled around with the `level`-weight
+    # such that when `level` == 0, the `sepia_matrix` becomes the identity matrix
+    # (which does exactly nothing with the colors), and when `level` == 1 it
+    # cancels out and becomes the original `sepia_matrix` proposed in the
+    # assignment.
     sepia_matrix = \
         [[0.131*level+(1-level), 0.534*level          , 0.272*level          ],
          [0.168*level          , 0.686*level+(1-level), 0.349*level          ],
@@ -29,26 +34,27 @@ def numba_color2sepia(image, level=1.0):
 
     # Initialize storage of highest color value; for correcting overflowing
     # color values by downscaling all pixel color values.
-    max_color = 0.0
+    max_color = 255.0
 
-    # Iterate over all x,y-pixels
+    # Iterate over all x,y-pixels using a good ol' fashioned loop-in-a-loop.
     for x in range(width):
-      for y in range(heigth):
-        for c in range(channels):
-          image[y,x,c] = image[y,x,b]*sepia_matrix[c][b] + \
-                         image[y,x,g]*sepia_matrix[c][g] + \
-                         image[y,x,r]*sepia_matrix[c][r]
-          max_color = max(max_color, image[y,x,c])
+      for y in range(height):
+        for n in range(colors):
+          # Do the matrix–vector multiplication.
+          output[y,x,n] = \
+              sum([image[y,x,m]*sepia_matrix[n][m] for m in range(colors)])
+          max_color = max(max_color, output[y,x,n])
 
     # Scale all colors such that `max_color` * `scalar` == 255. This is an
     # expensive operation, as we have to iterate over the entire image again.
     scalar = 255 / max_color
-    for x in range(width):
-      for y in range(heigth):
-        for c in range(channels):
-          image[y,x,c] = image[y,x,c] * scalar
+    if scalar != 1.0:
+      for x in range(width):
+        for y in range(height):
+          for c in range(colors):
+            output[y,x,c] = output[y,x,c] * scalar
 
-    return image
+    return output
   
   # Call optimized function
   return f(image)
