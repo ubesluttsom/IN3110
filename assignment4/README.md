@@ -1,4 +1,6 @@
-# assignment4
+## assignment4
+
+# Instapy
 
 ## Setup
 
@@ -26,33 +28,38 @@ $ instapy rain.jpg -se -i python numpy -r       > numpy_report_color2sepia.txt
 $ instapy rain.jpg -se -i python numpy numba -r > numba_report_color2sepia.txt
 ```
 
+## Unit test
+
+To do unit tests of all filter implementations, first install `pytest`, e.g:
+```{=bash}
+$ pip install pytest
+```
+Then you can run, and get sample output:
+```{=bash}
+$ pytest test_instapy.py
+============================= test session starts =============================
+platform linux -- Python 3.9.7, pytest-6.2.5, py-1.10.0, pluggy-1.0.0
+rootdir: /home/martin/uio/in3110/assignment4
+collected 6 items
+
+test_instapy.py ......                                                   [100%]
+
+============================== 6 passed in 2.01s ==============================
+```
+Occasionally, I get fails, but I attribute that to rare rounding errors.
+
+## `instapy` script
+
+Display usage with `instapy --help`.
+
 ## TODOs
 
-- [x] Make it a package.
-- [x] Factor out file operations from filter modules. Put them instead in
-  `instapy.utils`.
-- [x] ~~Test if `instapy.gray.numba_color2gray` works by just calling
-  `instapy.gray.python_color2gray` in function body.~~ It does not.
-- [x] Change structure to `instapy/utils.py` with `instapy.utils.runtime()`,
-  `instapy.utils.read_image()` and `instapy.utils.save_image()`.
-- [x] Create the following functions:
-  > Include a function `grayscale_image(input filename, output filename=None)`
-  > which returns a numpy (unsigned) integer 3D array of a gray image of input
-  > filename. If `output_filename` is supplied, the created image should also
-  > be saved to the specified location with the specified name, which returns a
-  > numpy (unsigned) integer 3D array of a gray image of `input_filename`.
-
-  > The function `sepia_image(input filename, output filename=None)` should be
-  > implemented in the same way as `grayscale_image()`.
-- [ ] Create unit test `test_instapy.py` using `pytest`. This can be added
-  under `instapy.utils.test_instapy`, maybe?
-- [ ] Improve the user interface: implement all arguments listed in assignment.
-- [x] Stepless sepia filer.
-- [x] Stepless gray filer. (Personal addition.)
-- [x] Runtime tracking.
-- [ ] Write docstrings to all functions.
+- [ ] Write docstrings for all functions.
+  * [x] `instapy.common`
+  * [x] `instapy.utils`
+  * [ ] `test_instapy.py`
 
 ---
 
-<sup><a name="bloat">1</a></sup>: As opposed to `virtualenv` or `conda`. Why does this course insist on
-bloating my computer with unnecessary installations?
+<sup><a name="bloat">1</a></sup>: As opposed to `virtualenv` or `conda`. Why
+does this course insist on bloating my computer with unnecessary installations?
