@@ -1,4 +1,4 @@
-from cv2 import imread, imwrite
+from cv2 import imread, imwrite, resize
 from timeit import timeit
 
 def read_image(inputfile):
@@ -21,6 +21,9 @@ def save_image(outputfile, image, suffix=None):
   # Otherwise, use specified output filename
   else:
     imwrite(outputfile, image)
+
+def resize_image(image, scale):
+  return resize(image, (int(scale*image.shape[1]), int(scale*image.shape[0])))
 
 def runtime(inputfile,
             implementations=("python",
