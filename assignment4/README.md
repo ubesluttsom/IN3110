@@ -52,6 +52,16 @@ Occasionally, I get fails, but I attribute that to rare rounding errors.
 
 Display usage with `instapy --help`.
 
+## Numpy vs. Numba
+
+I quote `reports/numba_report_color2gray.txt` here (for convenience):
+> Advantage of using Numpy could be, essentially, free speed up *if* you are
+> writing pure Python code anyway. The problem, though, is that it's a bit
+> *too* magic, and thereby difficult to debug. Numpy, on the other hand, is
+> great *if* you know maths, and are willing to read some documentation. Numba
+> and Numpy are, supposedly, fairly compatible (some esoteric functions
+> notwithstanding), so *porque no los dos?*
+
 ## TODOs
 
 - [ ] Write docstrings for all functions.
