@@ -46,6 +46,10 @@ if __name__ == "__main__":
                       help='choose the implementation(s), otherwise use '
                            '\'numpy\'')
 
+  # Add argument for scaling the image
+  parser.add_argument('-sc', '--scale', metavar='SCALE', type=float,
+                      help='scale factor to resize image (float)')
+
   # Add a mutually exclusive group for filters; you can only apply one filter
   # at a time. Print error message if attempted.
   filters = parser.add_mutually_exclusive_group()
@@ -64,6 +68,15 @@ if __name__ == "__main__":
   for file in args.file:
 
     image = instapy.utils.read_image(file)
+
+    # If `--scale` argument is given, this is the first thing we do.
+    if args.scale:
+      image = instapy.utils.resize_image(image, args.scale)
+
+      # If no output filename or suffix was provided, save as output as input
+      # filename + `_scaled`.
+      if args.out == None and args.suffix == None:
+        args.suffix = f'_scaled'
 
     # If the `runtime` argument is passed, let that function do the rest, and
     # exit. `time()` will run on the entire set of `--implement` arguments
