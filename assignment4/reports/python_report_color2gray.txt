@@ -1,3 +1,3 @@
-Timing (with `timeit`): `python_color2gray` on 'rain.jpg': 400 px, 600 px, 3 channels ...
-Average runtimes after 10 runs (each):
-  `python_color2gray`: 0.858907 s
+Timing (with `timeit`): `python_color2gray` on `rain.jpg`: 400 px, 600 px, 3 channels ...
+Average runtimes after 3 runs (each):
+  `python_color2gray`: 3.98182 s

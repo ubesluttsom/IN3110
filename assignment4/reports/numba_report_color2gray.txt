@@ -1,11 +1,11 @@
-Timing (with `timeit`): `numpy_color2gray` on 'rain.jpg': 400 px, 600 px, 3 channels ...
-Timing (with `timeit`): `python_color2gray` on 'rain.jpg': 400 px, 600 px, 3 channels ...
-Timing (with `timeit`): `numba_color2gray` on 'rain.jpg': 400 px, 600 px, 3 channels ...
-Average runtimes after 10 runs (each):
-  `numpy_color2gray`: 0.011529 s
-  `python_color2gray`: 0.856582 s
-  `numba_color2gray`: 0.08382 s
+Timing (with `timeit`): `numba_color2gray` on `rain.jpg`: 400 px, 600 px, 3 channels ...
+Timing (with `timeit`): `numpy_color2gray` on `rain.jpg`: 400 px, 600 px, 3 channels ...
+Timing (with `timeit`): `python_color2gray` on `rain.jpg`: 400 px, 600 px, 3 channels ...
+Average runtimes after 3 runs (each):
+  `numba_color2gray`: 0.116345 s
+  `numpy_color2gray`: 0.002164 s
+  `python_color2gray`: 3.972073 s
 Normalized to fastest implementation time:
+  `numba_color2gray`: 53.763863
   `numpy_color2gray`: 1.0
-  `python_color2gray`: 74.298031
-  `numba_color2gray`: 7.270362
+  `python_color2gray`: 1835.523567
