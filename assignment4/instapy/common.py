@@ -8,9 +8,19 @@ implementations.
 
 This is practical because it avoids code duplication.
 
+The docstrings here describe the arguments and return values for the *returned
+function*, and not the actual decorators (which all only takes another function
+as a single positional argument).
+
+Implementation note:
+    I could have used the `**kwargs` dictionary to manipulate and pass
+    arguments down the "decorator chain". But since `filter_matrix` and `level`
+    are the only keyword arguments, I figured it's easier to just include and
+    pass them explicitly. A possible future improvement.
+
 """
 
-def python_filter(wrapper):
+def python_filter(color2something):
   """Python implementation of image filter.
   Returns a python filter function. Does the pixel calculations in good old
   fashioned loops-in-loops. This should be Numba compatible, and gets decorated
@@ -63,7 +73,7 @@ def python_filter(wrapper):
   return f
 
 
-def numpy_filter(wrapper):
+def numpy_filter(color2something):
   """Numpy implementation of image filter.
 
   Returns a numpy filter function. It does a linear transformation on the image
