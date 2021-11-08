@@ -119,8 +119,8 @@ def create_betting_slip(events, save_as):
   """
   # ensure directory exists
   makedirs("datetime_filter", exist_ok=True)
-  with open(f"./datetime_filter/{save_as}.md", "w") as out_file:
-    out_file.write(f"# BETTING SLIP ({save_as})\n\nName:\n\n")
+  with open(f"./datetime_filter/{save_as}", mode='wt') as out_file:
+    out_file.write(f"# Betting Slip (`{save_as}`)\n\nName:\n\n")
     out_file.write( "Date | Event | Venue | Discipline | Who wins?\n")
     out_file.write( "--- | --- | --- | --- | ---\n")
     for e in events :
@@ -131,4 +131,4 @@ if __name__ == '__main__':
   events = extract_events("https://en.wikipedia.org/wiki/2021%E2%80%9322_FIS_Alpine_Ski_World_Cup")
   for event in events:
     print(event)
-  create_betting_slip(events, "2021-22_FIS_Alpine_Ski_Cup")
+  create_betting_slip(events, "betting_slip_empty.md")

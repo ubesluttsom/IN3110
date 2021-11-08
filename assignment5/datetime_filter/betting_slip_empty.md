@@ -1,4 +1,4 @@
-# BETTING SLIP (2021-22_FIS_Alpine_Ski_Cup)
+# Betting Slip (`betting_slip_empty.md`)
 
 Name:
 
