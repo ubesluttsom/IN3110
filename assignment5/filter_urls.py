@@ -1,4 +1,5 @@
 import re
+from os import makedirs
 from requesting_urls import get_html
 
 def find_urls(html_string, base_url=None, output=None):
@@ -18,7 +19,8 @@ def find_urls(html_string, base_url=None, output=None):
       url_set.add(url)
 
   if output != None:
-    with open(output, mode='wt') as file:
+    makedirs("filter_urls", exist_ok=True)
+    with open(f"./filter_urls/{output}", mode='wt') as file:
       for url in url_set:
         file.write(url + '\n')
 
@@ -36,7 +38,8 @@ def find_articles(html_string, output=None, base_url="https://en.wikipedia.org")
       article_set.add(url)
 
   if output != None:
-    with open(output, mode='wt') as file:
+    makedirs("filter_urls", exist_ok=True)
+    with open(f"./filter_urls/{output}", mode='wt') as file:
       for article in article_set:
         file.write(article + '\n')
 

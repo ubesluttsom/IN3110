@@ -1,4 +1,5 @@
 import requests as req
+from os import makedirs
 
 def get_html(url, params=None, output=None):
   """ My detailed Docstring Here
@@ -7,7 +8,8 @@ def get_html(url, params=None, output=None):
   response = req.get(url, params=params)
 
   if output != None:
-    with open(output, mode='wt') as file:
+    makedirs("requesting_urls", exist_ok=True)
+    with open(f"./requesting_urls/{output}", mode='wt') as file:
       file.write(response.text)
 
   return response.text
