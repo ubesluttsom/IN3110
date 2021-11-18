@@ -16,6 +16,7 @@ def get_html(url, params=None, output=None):
 
   response = req.get(url, params=params)
 
+  #making output file if argument is given
   if output != None:
     makedirs("requesting_urls", exist_ok=True)
     with open(f"./requesting_urls/{output}", mode='wt') as file:

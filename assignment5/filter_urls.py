@@ -27,6 +27,7 @@ def find_urls(html_string, base_url=None, output=None):
     else:
       url_set.add(url)
 
+      #making output file if argument is given
   if output != None:
     makedirs("filter_urls", exist_ok=True)
     with open(f"./filter_urls/{output}", mode='wt') as file:
@@ -55,6 +56,7 @@ def find_articles(html_string, output=None, base_url="https://en.wikipedia.org")
     if re.match(r'.*wikipedia.org\/wiki\/[^:]+$', url):
       article_set.add(url)
 
+     #making output file if argument is given
   if output != None:
     makedirs("filter_urls", exist_ok=True)
     with open(f"./filter_urls/{output}", mode='wt') as file:
