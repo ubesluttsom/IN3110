@@ -2,7 +2,16 @@ import requests as req
 from os import makedirs
 
 def get_html(url, params=None, output=None):
-  """ My detailed Docstring Here
+  """Will make a request for a URL from a given website.
+
+  Parameters:
+  url: website URL
+  params: dictionary containing key/value pairs to request
+  a specific type of data, optional
+  output: name of file where html is saved, optional
+
+  Returns:
+  html data from given URL
   """
 
   response = req.get(url, params=params)
