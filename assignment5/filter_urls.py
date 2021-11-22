@@ -3,7 +3,16 @@ from os import makedirs
 from requesting_urls import get_html
 
 def find_urls(html_string, base_url=None, output=None):
-  """ Excellent Docstring here
+  """Uses regex to find all URLs in html data.
+
+  Parameters:
+  html_string: string with all html data from a website
+  base_url: will also look for relative URLs in html data
+  and add to the base URL, optional
+  output: name of file where all URLs are saved, optional
+
+  Returns:
+  a list with all URLs from the html data
   """
 
   url_list = re.findall(r'href="([^"#]+)["#]', html_string)
@@ -18,6 +27,7 @@ def find_urls(html_string, base_url=None, output=None):
     else:
       url_set.add(url)
 
+      #making output file if argument is given
   if output != None:
     makedirs("filter_urls", exist_ok=True)
     with open(f"./filter_urls/{output}", mode='wt') as file:
@@ -27,7 +37,16 @@ def find_urls(html_string, base_url=None, output=None):
   return list(url_set)
 
 def find_articles(html_string, output=None, base_url="https://en.wikipedia.org"):
-  """ Absent Docstring here
+  """Uses regex to find all articles in html data.
+
+  Parameters:
+  html_string: string with all html data from a website
+  base_url: look for relative URLs in html data
+  and add to the base URL
+  output: name of file where all article URLs are saved, optional
+
+  Returns:
+  a list with all article URLs from the html data
   """
 
   url_set = set(find_urls(html_string, base_url=base_url))
@@ -37,6 +56,7 @@ def find_articles(html_string, output=None, base_url="https://en.wikipedia.org")
     if re.match(r'.*wikipedia.org\/wiki\/[^:]+$', url):
       article_set.add(url)
 
+     #making output file if argument is given
   if output != None:
     makedirs("filter_urls", exist_ok=True)
     with open(f"./filter_urls/{output}", mode='wt') as file:
