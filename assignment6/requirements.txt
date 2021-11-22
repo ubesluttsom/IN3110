@@ -1,0 +1,3 @@
+altair
+altair-viewer
+pandas
