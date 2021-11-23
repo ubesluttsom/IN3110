@@ -49,7 +49,8 @@ def get_data_from_csv(
     )
 
     if countries is None:
-        # no countries specified, pick 6 countries with the highest case count at end_date
+        # no countries specified, pick 6 countries with the highest case count
+        # at end_date
         if end is None:
             # no end date specified, pick latest date available
             end_date = df.date.iloc[-1]
@@ -59,12 +60,14 @@ def get_data_from_csv(
 
         # identify the 6 countries with the highest case count
         # on the last included day
-        tmp = df.groupby("location")         # group locations, AKA countries
-        tmp = tmp["new_cases_per_million"]   # select right column
-        tmp = tmp.sum()                      # per 'location', do the sum
-        tmp = tmp.sort_values()              # sort by the above sum, ascending
-        tmp = tmp.tail(6)                    # choose highest 6 values
-        countries = tmp.index                # select index
+        countries = (
+            df.groupby("location")     # group locations, AKA countries
+            ["new_cases_per_million"]  # select right column
+            .sum()                     # per 'location', do the sum
+            .sort_values()             # sort by the above sum, ascending
+            .tail(6)                   # choose highest 6 values
+            .index                     # select index
+        )
 
     # now filter to include only the selected countries
     cases_df = df.loc[df["location"].isin(countries)]
@@ -104,16 +107,30 @@ def plot_reported_cases_per_million(countries=None, start=None, end=None):
         altair Chart of number of reported covid-19 cases over time.
     """
     # choose data column to be extracted
-    columns = ["new_cases_per_million"]
+    columns = ['new_cases_per_million',
+               'location',
+               'new_cases',
+               'tests_per_case',
+               'total_cases']
     # create dataframe
     cases_df = get_data_from_csv(columns,
                                  countries=countries,
                                  start=start,
                                  end=end)
 
+    if end is None:
+        # no end date specified, pick latest date available
+        end = cases_df.date.iloc[-1].strftime('%Y-%m-%d')
+
+    if start is None:
+        # no start date specified, pick earliest date available
+        start = cases_df.date.iloc[0].strftime('%Y-%m-%d')
+
     # Note: when you want to plot all countries simultaneously while enabling
     # checkboxes, you might need to disable altairs max row limit by commenting
-    # in the following line alt.data_transformers.disable_max_rows()
+    # in the following line
+
+    alt.data_transformers.disable_max_rows()
 
     chart = (
         alt.Chart(cases_df,
@@ -135,6 +152,7 @@ def plot_reported_cases_per_million(countries=None, start=None, end=None):
                 ),
             ),
             color=alt.Color("location:N", legend=alt.Legend(title="Country")),
+            tooltip=['location', 'new_cases', 'tests_per_case', 'total_cases'],
         )
         .interactive()
     )

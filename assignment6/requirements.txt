@@ -1,3 +1,4 @@
 altair
 altair-viewer
 pandas
+fastapi[all]
