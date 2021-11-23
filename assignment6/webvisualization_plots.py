@@ -59,11 +59,13 @@ def get_data_from_csv(
 
         # identify the 6 countries with the highest case count
         # on the last included day
-        tmp = df.groupby("location")                     # get locations
-        tmp = tmp["new_cases_per_million"]               # get right coloumn
-        tmp = tmp.sum()                                  # per 'location' do sum
-        tmp = tmp.sort_values(axis=0, ascending=False)   # sort by this sum
-        countries = tmp.head(6).index.tolist()           # choose highest 6
+        tmp = df.groupby("location")         # group locations, AKA countries
+        tmp = tmp["new_cases_per_million"]   # select right column
+        tmp = tmp.sum()                      # per 'location', do the sum
+        tmp = tmp.sort_values()              # sort by the above sum, ascending
+        tmp = tmp.tail(6)                    # choose highest 6 values
+        countries = tmp.index                # select index
+
     # now filter to include only the selected countries
     cases_df = df.loc[df["location"].isin(countries)]
 
