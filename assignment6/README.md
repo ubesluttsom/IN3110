@@ -17,11 +17,17 @@ saturated countries.
 
 Run `webvisualization.py` to launch the web application.
 
+This assignment shamelessly relies heavily on both the outlines, and the
+example code from the lecture, with some variable name changes. 😗
+
+I haven't implemented all exercises; my time is limited (exams), and I figure
+I should have enough points too pass the course. See the list below. (◕ᴗ◕✿)
+
 ### Completed exercises
 
 - [x] *6.1: Cases Over Time Plotter (10 points)*
 - [x] *6.2: Becoming a Web App Developer Using FastAPI (5 points)*
-- [ ] *6.3: Interactive Visualization: Upgrading to Pro-Level (10 points)*
+- [x] *6.3: Interactive Visualization: Upgrading to Pro-Level (10 points)*
 - [ ] *6.4: Implement the Weekly Dropdown (10 points IN4110 ONLY)*
 - [ ] *6.5: Documentation and Help Page (5 points)*
 - [ ] *6.6: Upgrading your App to the Next Level (6 bonus points for ALL)*

@@ -11,28 +11,53 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega-embed@6"></script>
 </head>
 <body>
-  <div id="vis"></div>
+  <h1>Daily reported COVID-19 cases per million</h1>
+  <div id="altair-plot"></div>
+  <form action="javascript:refreshPlot()" id="countries-form">
+    {% for country in countries %}
+    <input type="checkbox" name="{{ country }}" value="{{ country }}" unchecked />
+    <label for="{{ country }}">{{ country }}</label>
+    <br />
+    {% endfor %}
+    <button type="submit">Refresh</button>
+  </form>
   <script>
-    (async function(vegaEmbed) {
+    async function refreshPlot() {
+      // get selected checkboxes
+      var selected = [];
+      for (checkbox of document
+        .getElementById("countries-form")
+        .querySelectorAll("input[type=checkbox]")) {
+        if (checkbox.checked) {
+          selected.push(checkbox.value);
+        }
+      }
+      var countriesParam = "?countries=" + encodeURIComponent(selected.join(","));
 
-      var response = await fetch("plot_reported_cases_per_million.json");
+      // update the altair plot
+      var response = await fetch("/plot_reported_cases_per_million.json" + countriesParam);
       var spec = await response.json();
 
-      var embedOpt = {"mode": "vega-lite"};
+      var embedOpt = { mode: "vega-lite" };
 
-      function showError(el, error){
-          el.innerHTML = ('<div class="error" style="color:red;">'
-                          + '<p>JavaScript Error: ' + error.message + '</p>'
-                          + "<p>This usually means there's a typo in your chart specification. "
-                          + "See the javascript console for the full traceback.</p>"
-                          + '</div>');
-          throw error;
+      function showError(el, error) {
+        el.innerHTML =
+          '<div class="error" style="color:red;">' +
+          "<p>JavaScript Error: " +
+          error.message +
+          "</p>" +
+          "<p>This usually means there's a typo in your chart specification. " +
+          "See the javascript console for the full traceback.</p>" +
+          "</div>";
+        throw error;
       }
-      const el = document.getElementById('vis');
-      vegaEmbed("#vis", spec, embedOpt)
-        .catch(error => showError(el, error));
-    })(vegaEmbed);
-
+      const el = document.getElementById("vis");
+      vegaEmbed("#altair-plot", spec, embedOpt).catch((error) =>
+        showError(el, error)
+      );
+    }
+    // trigger a first refresh of the plots on page load
+    refreshPlot();
   </script>
 </body>
 </html> 

@@ -158,6 +158,11 @@ def plot_reported_cases_per_million(countries=None, start=None, end=None):
     )
     return chart
 
+def get_countries():
+    return pd.read_csv("owid-covid-data.csv",
+                       sep=",",
+                       usecols=["location"])['location'].unique()
+
 
 def main():
     """Function called when run as a script

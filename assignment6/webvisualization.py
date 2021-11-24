@@ -1,8 +1,11 @@
+from typing import Optional
+
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from webvisualization_plots import plot_reported_cases_per_million
+from webvisualization_plots import get_countries
 
 # create app variable (FastAPI instance)
 app = FastAPI()
@@ -33,15 +36,27 @@ def plot_reported_cases_per_million_html(request: Request):
         "plot_reported_cases_per_million.html",
         {
             "request": request,
+            "countries": get_countries(),
             # further template inputs here
         },
     )
 
 
 @app.get("/plot_reported_cases_per_million.json")
-def plot_reported_cases_per_million_json():
+def plot_reported_cases_per_million_json(
+        countries: Optional[str]=None,
+        end: Optional[str]=None
+    ):
     """Return json chart from altair"""
-    chart = plot_reported_cases_per_million(countries=None,
+
+    breakpoint()
+
+    if countries:
+        countries = countries.split(',')
+    elif countries == '':
+        countries = None
+
+    chart = plot_reported_cases_per_million(countries,
                                             start=None,
                                             end=None)
     return chart.to_dict()
