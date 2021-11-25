@@ -21,7 +21,9 @@ This assignment shamelessly relies heavily on both the outlines, and the
 example code from the lecture, with some variable name changes. 😗
 
 I haven't implemented all exercises; my time is limited (exams), and I figure
-I should have enough points too pass the course. See the list below. (◕ᴗ◕✿)
+I should have enough points too pass the course 🤞. See the list below.
+
+—Martin ⚘
 
 ### Completed exercises
 

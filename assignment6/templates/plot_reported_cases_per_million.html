@@ -2,8 +2,20 @@
 <html>
 <head>
   <style>
+    body {
+        margin: 5% auto;
+        width: 800px
+    }
+
     .error {
         color: red;
+    }
+
+    #column {
+        float: left;
+        height: 225px;
+        width: 33%;
+        overflow: auto;
     }
   </style>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega@5"></script>
@@ -11,31 +23,71 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega-embed@6"></script>
 </head>
 <body>
-  <h1>Daily reported COVID-19 cases per million</h1>
-  <div id="altair-plot"></div>
-  <form action="javascript:refreshPlot()" id="countries-form">
-    {% for country in countries %}
-    <input type="checkbox" name="{{ country }}" value="{{ country }}" unchecked />
-    <label for="{{ country }}">{{ country }}</label>
-    <br />
-    {% endfor %}
-    <button type="submit">Refresh</button>
+  <h1>Daily Reported COVID-19 Cases per Million</h1>
+  <div id="altair-plot" class="center"></div>
+  <form action="javascript:refreshPlot()" id="interval-form">
+    <h4>Time interval</h4>
+    <p>Specified in YYYY-MM-DD. Start date defaults (i.e. if blank) to first
+    date on record. End date defaults to latest recorded date.</p>
+    <label for="start">Start date:</label>
+    <input type="text" id="start" name="{{ start }}" value="{{ start }}">
+    <label for="end">End date:</label>
+    <input type="text" id="end" name="{{ end }}" value="{{ end }}">
+  </form>
+  <div>
+    <form action="javascript:refreshPlot()" id="location-form">
+      <h4>Locations</h4>
+      <p>Defaults to 6 most saturated locations in the 7 days prior to
+      specified end date.</p>
+      <div id="column">
+        <p>Countries:</p>
+        {% for country in countries %}
+          <input type="checkbox" name="{{ country }}" value="{{ country }}" unchecked />
+          <label for="{{ country }}">{{ country }}</label>
+          <br />
+        {% endfor %}
+      </div>
+      <div id="column">
+        <p>Regions:</p>
+        {% for region in regions %}
+          <input type="checkbox" name="{{ region }}" value="{{ region }}" unchecked />
+          <label for="{{ region }}">{{ region }}</label>
+          <br />
+        {% endfor %}
+      </div>
+      <div id="column">
+        <p>Income:</p>
+        {% for income in incomes %}
+          <input type="checkbox" name="{{ income }}" value="{{ income }}" unchecked />
+          <label for="{{ income }}">{{ income }}</label>
+          <br />
+        {% endfor %}
+      </div>
+    </form>
+  </div>
+  <form action="javascript:refreshPlot()">
+    <button type="submit" style="margin-top: 2em;">Refresh!</button>
   </form>
   <script>
     async function refreshPlot() {
       // get selected checkboxes
       var selected = [];
       for (checkbox of document
-        .getElementById("countries-form")
+        .getElementById("location-form")
         .querySelectorAll("input[type=checkbox]")) {
         if (checkbox.checked) {
           selected.push(checkbox.value);
         }
       }
-      var countriesParam = "?countries=" + encodeURIComponent(selected.join(","));
+      var countriesParam = "&countries=" + encodeURIComponent(selected.join(","));
+      var startParam = "&start=" + encodeURIComponent(document.getElementById("start").value);
+      var endParam = "&end=" + encodeURIComponent(document.getElementById("end").value);
 
       // update the altair plot
-      var response = await fetch("/plot_reported_cases_per_million.json" + countriesParam);
+      var response = await fetch("/plot_reported_cases_per_million.json?" +
+                                 countriesParam +
+                                 startParam +
+                                 endParam);
       var spec = await response.json();
 
       var embedOpt = { mode: "vega-lite" };

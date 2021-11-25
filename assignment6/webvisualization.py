@@ -1,30 +1,16 @@
 from typing import Optional
 
 from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from webvisualization_plots import plot_reported_cases_per_million
 from webvisualization_plots import get_countries
+from webvisualization_plots import get_regions
+from webvisualization_plots import get_incomes
 
 # create app variable (FastAPI instance)
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-
-# mount one or more static directories,
-# e.g. your auto-generated Sphinx documentation with html files
-app.mount(
-    # the URL where these files will be available
-    "/static",
-    StaticFiles(
-        # the directory the files are in
-        directory="static/",
-        html=True,
-    ),
-    # an internal name for FastAPI
-    name="static",
-)
-
 
 @app.get("/")
 def plot_reported_cases_per_million_html(request: Request):
@@ -37,28 +23,36 @@ def plot_reported_cases_per_million_html(request: Request):
         {
             "request": request,
             "countries": get_countries(),
-            # further template inputs here
+            "regions": get_regions(),
+            "incomes": get_incomes(),
         },
     )
 
 
 @app.get("/plot_reported_cases_per_million.json")
-def plot_reported_cases_per_million_json(
+async def plot_reported_cases_per_million_json(
         countries: Optional[str]=None,
+        start: Optional[str]=None,
         end: Optional[str]=None
     ):
     """Return json chart from altair"""
 
-    breakpoint()
+    # Split the countries query variable into a list of strings. Disregard
+    # empty strings.
 
     if countries:
         countries = countries.split(',')
     elif countries == '':
         countries = None
 
-    chart = plot_reported_cases_per_million(countries,
-                                            start=None,
-                                            end=None)
+    if start == '':
+        start = None
+    if end == '':
+        end = None
+
+    chart = plot_reported_cases_per_million(countries=countries,
+                                            start=start,
+                                            end=end)
     return chart.to_dict()
            
 
